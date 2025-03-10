@@ -117,22 +117,15 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     };
 
-    /*FUNCION ENCARGADA DE ACTUALIZAR AL EMPELADO ACTUALIZANDO SU INFORMACION*/
+    /*FUNCION ENCARGADA DE MANDAR LOS DATOS DEL EMPLEADO AL FORM PARA ACTUALIZAR SU INFORMACION*/
     window.editEmployee = function (id) {
         const employee = employees.find(emp => emp.id_empleado === id);
         if (employee) {
-            const newName = prompt("Nuevo nombre:", employee.nombre);
-            const newSalary = prompt("Nuevo salario:", employee.salario);
+            // Guardar datos en localStorage
+            localStorage.setItem("employeeToEdit", JSON.stringify(employee));
 
-            if (newName && newSalary) {
-                fetch(`https://api-corp-tort.onrender.com/empleados/update/${id}`, {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ nombre: newName, salario: parseFloat(newSalary) }),
-                })
-                    .then(() => fetchEmployees())
-                    .catch(error => console.error("Error al actualizar:", error));
-            }
+            // Redirigir a la vista del formulario
+            window.location.href = "edit-employee.html";
         }
     };
 

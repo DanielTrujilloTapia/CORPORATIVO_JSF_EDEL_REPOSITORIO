@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Empleado</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 600px;
+        }
+
+        .card-header {
+            background-color: #002F58;
+            color: white;
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background-color: #002F58;
+            border-color: #002F58;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background-color: #001F3A;
+            border-color: #001F3A;
+        }
+
+        .btn-secondary {
+            width: 100%;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mt-5">
+    <div class="card shadow">
+        <div class="card-header">
+            Editar Empleado
+        </div>
+        <div class="card-body">
+            <form id="employeeForm">
+                <input type="hidden" id="id_empleado"> <!-- Campo oculto para el ID -->
+
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Nombre</label>
+                    <input type="text" id="nombre" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="apellidos" class="form-label">Apellidos</label>
+                    <input type="text" id="apellidos" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="puesto" class="form-label">Puesto</label>
+                    <select id="puesto" class="form-select" required>
+                        <option value="">Seleccione un puesto</option>
+                        <option value="Gerente">Gerente</option>
+                        <option value="Supervisor">Supervisor</option>
+                        <option value="Operario">Operario</option>
+                        <option value="Vendedor">Vendedor</option>
+                        <option value="Almacenista">Almacenista</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="salario" class="form-label">Salario</label>
+                    <input type="number" id="salario" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="fecha_contratacion" class="form-label">Fecha de Contratación</label>
+                    <input type="date" id="fecha_contratacion" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="telefono" class="form-label">Teléfono</label>
+                    <input type="text" id="telefono" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="correo" class="form-label">Correo</label>
+                    <input type="email" id="correo" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="direccion" class="form-label">Dirección</label>
+                    <input type="text" id="direccion" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="estado" class="form-label">Estado</label>
+                    <select id="estado" class="form-select" required>
+                        <option value="">Seleccione un estado</option>
+                        <option value="Activo">Activo</option>
+                        <option value="Inactivo">Inactivo</option>
+                        <option value="Suspendido">Suspendido</option>
+                    </select>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                    <a href="dashboard.html" class="btn btn-secondary">Volver</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="assets/js/bootstrap.bundle.min.js"></script>
+<script src="js/edit-employee.js"></script>
+</body>
+</html>
