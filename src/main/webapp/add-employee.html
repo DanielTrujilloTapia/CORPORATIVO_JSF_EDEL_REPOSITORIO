@@ -4,50 +4,69 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Agregar Empleado</title>
+
+  <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+
   <style>
     body {
       font-family: 'Roboto', sans-serif;
-      background-color: #f8f9fa; /* Fondo claro */
-    }
-    /* Estilo personalizado para el header del card */
-    .card-header {
-      background-color: #002F58;
-      color: white; /* Para asegurarte de que el texto sea legible */
+      background-color: #f8f9fa;
     }
 
-    /* Estilo personalizado para los botones principales */
+    /* Contenedor centrado */
+    .container {
+      max-width: 600px;
+    }
+
+    /* Estilo para la cabecera del card */
+    .card-header {
+      background-color: #002F58;
+      color: white;
+      text-align: center;
+      font-size: 1.3rem;
+      font-weight: bold;
+    }
+
+    /* Estilo para los botones */
     .btn-primary {
       background-color: #002F58;
       border-color: #002F58;
+      width: 100%;
     }
 
     .btn-primary:hover {
-      background-color: #001F3A; /* Un tono más oscuro para el hover */
+      background-color: #001F3A;
       border-color: #001F3A;
+    }
+
+    .btn-secondary {
+      width: 100%;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
 
 <div class="container mt-5">
-  <div class="card">
+  <div class="card shadow">
     <div class="card-header">
-      <h2 class="table-title">Agregar Nuevo Empleado</h2>
+      Agregar Nuevo Empleado
     </div>
     <div class="card-body">
       <form id="employeeForm">
         <div class="mb-3">
-          <label for="nombre">Nombre</label>
-          <input type="text" id="nombre" class="form-control" required>
+          <label for="nombre" class="form-label">Nombre</label>
+          <input type="text" id="nombre" class="form-control" placeholder="Tu nombre" required>
         </div>
         <div class="mb-3">
-          <label for="apellidos">Apellidos</label>
-          <input type="text" id="apellidos" class="form-control" required>
+          <label for="apellidos" class="form-label">Apellidos</label>
+          <input type="text" id="apellidos" class="form-control" placeholder="Tus apellidos" required>
         </div>
         <div class="mb-3">
-          <label for="puesto">Puesto</label>
+          <label for="puesto" class="form-label">Puesto</label>
           <select id="puesto" class="form-select" required>
+            <option value="">Seleccione un puesto</option>
             <option value="Gerente">Gerente</option>
             <option value="Supervisor">Supervisor</option>
             <option value="Operario">Operario</option>
@@ -56,42 +75,45 @@
           </select>
         </div>
         <div class="mb-3">
-          <label for="salario">Salario</label>
-          <input type="number" id="salario" class="form-control" required>
+          <label for="salario" class="form-label">Salario</label>
+          <input type="number" id="salario" class="form-control" placeholder="Ej. 10000" required>
         </div>
         <div class="mb-3">
-          <label for="fecha_contratacion">Fecha de Contratación</label>
+          <label for="fecha_contratacion" class="form-label">Fecha de Contratación</label>
           <input type="date" id="fecha_contratacion" class="form-control" required>
         </div>
         <div class="mb-3">
-          <label for="telefono">Teléfono</label>
-          <input type="text" id="telefono" class="form-control">
+          <label for="telefono" class="form-label">Teléfono</label>
+          <input type="text" id="telefono" class="form-control" placeholder="Tu número" required>
         </div>
         <div class="mb-3">
-          <label for="correo">Correo</label>
-          <input type="email" id="correo" class="form-control">
+          <label for="correo" class="form-label">Correo</label>
+          <input type="text" id="correo" class="form-control" placeholder="Tu correo" required>
         </div>
         <div class="mb-3">
-          <label for="direccion">Dirección</label>
-          <input type="text" id="direccion" class="form-control">
+          <label for="direccion" class="form-label">Dirección</label>
+          <input type="text" id="direccion" class="form-control" placeholder="Tu dirección" required>
         </div>
         <div class="mb-3">
-          <label for="estado">Estado</label>
+          <label for="estado" class="form-label">Estado</label>
           <select id="estado" class="form-select" required>
+            <option value="">Seleccione algun estado</option>
             <option value="Activo">Activo</option>
             <option value="Inactivo">Inactivo</option>
             <option value="Suspendido">Suspendido</option>
           </select>
         </div>
-        <div class="justify-content-between">
-        <button type="submit" class="btn btn-primary">Guardar</button>
-        <a href="dashboard.html" class="btn btn-secondary">Volver</a>
+        <div class="d-grid gap-2">
+          <button type="submit" class="btn btn-primary">Guardar</button>
+          <a href="dashboard.html" class="btn btn-secondary">Volver</a>
         </div>
       </form>
     </div>
   </div>
 </div>
 
+<!-- Bootstrap JS -->
+<script src="assets/js/bootstrap.bundle.min.js"></script>
 <script src="js/add-employee.js"></script>
 </body>
 </html>
