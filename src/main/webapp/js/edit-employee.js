@@ -28,9 +28,6 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("correo").value = employee.correo;
         document.getElementById("direccion").value = employee.direccion;
         document.getElementById("estado").value = employee.estado;
-
-        // Guardar los valores originales para comparar después
-        document.getElementById("employeeForm").dataset.original = JSON.stringify(employee);
     }
 });
 
@@ -52,19 +49,6 @@ document.getElementById("employeeForm").addEventListener("submit", function (eve
         estado: document.getElementById("estado").value
     };
 
-    // Obtener los valores originales del dataset
-    const originalEmployee = JSON.parse(document.getElementById("employeeForm").dataset.original);
-
-    // Comparar si hubo cambios
-    const isChanged = Object.keys(updatedEmployee).some(
-        key => updatedEmployee[key] !== originalEmployee[key]
-    );
-
-    if (!isChanged) {
-        alert("No hubo ningún cambio en los datos.");
-        window.location.href = "dashboard.html"; // Redirigir al dashboard
-        return;
-    }
 
     // Enviar actualización a la API si hubo cambios
     fetch(`https://api-corp-tort.onrender.com/empleados/update_Empleado/${idEmpleado}`, {
