@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agregar Empleado</title>
+  <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="container mt-5">
+  <h2>Agregar Nuevo Empleado</h2>
+  <form id="employeeForm">
+    <div class="mb-3">
+      <label>Nombre</label>
+      <input type="text" id="nombre" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label>Apellidos</label>
+      <input type="text" id="apellidos" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label>Puesto</label>
+      <input type="text" id="puesto" class="form-control">
+    </div>
+    <div class="mb-3">
+      <label>Salario</label>
+      <input type="number" id="salario" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label>Fecha de Contratación</label>
+      <input type="date" id="fecha_contratacion" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label>Teléfono</label>
+      <input type="text" id="telefono" class="form-control">
+    </div>
+    <div class="mb-3">
+      <label>Correo</label>
+      <input type="email" id="correo" class="form-control">
+    </div>
+    <button type="submit" class="btn btn-primary">Guardar</button>
+    <a href="dashboard.html" class="btn btn-secondary">Volver</a>
+  </form>
+</div>
+
+<script src="js/dashboard.js"></script>
+</body>
+</html>
