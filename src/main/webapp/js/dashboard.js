@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let employees = [];
     let currentPage = 1;
 
+    /*FUNCION ASINCRONA ENCAARGADA DEL FETCH PARA LA OBTENCION DE TODOS LOS EMPLEADOS*/
     async function fetchEmployees() {
         try {
             const response = await fetch(apiUrl);
@@ -16,6 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    /*FUNCION ENCARGADA DE MOSTRAR A LOS EMPLEADOS EN LA TABLA*/
     function renderTable() {
         tableBody.innerHTML = "";
         const start = (currentPage - 1) * itemsPerPage;
@@ -44,6 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
         renderPagination();
     }
 
+    /*FUNCION QUE SE ENCARGA DE MANEJAR EL PAGINADO DE LA TABLA DE EMPLEADOS*/
     function renderPagination() {
         pagination.innerHTML = "";
         const totalPages = Math.ceil(employees.length / itemsPerPage);
@@ -68,6 +71,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    /*METODO ENCARGADO DE DARLE UN FORMATO LEGIBLE PARA EL USUARIO AL VALOR DATE*/
     function formatDate(date) {
         if (!date) return ''; // Si no hay fecha, retorna una cadena vacía
 
@@ -85,6 +89,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return `${day}/${month}/${year}`;
     }
 
+    /*FUNCION ENCARGADA DE ELIMINAR AL EMPLEADO REMOVIENDOLO*/
     window.deleteEmployee = async function (id) {
         if (confirm("¿Seguro que quieres eliminar este empleado?")) {
 
@@ -112,6 +117,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     };
 
+    /*FUNCION ENCARGADA DE ACTUALIZAR AL EMPELADO ACTUALIZANDO SU INFORMACION*/
     window.editEmployee = function (id) {
         const employee = employees.find(emp => emp.id_empleado === id);
         if (employee) {
