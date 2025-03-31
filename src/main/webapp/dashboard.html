@@ -10,7 +10,39 @@
     body {
       font-family: 'Roboto', sans-serif;
       background-color: #f8f9fa; /* Fondo claro */
+      display: flex;
     }
+
+    /* Contenedor del menú lateral */
+    #menu-container {
+      width: 250px;
+      position: fixed;
+      left: 0;
+      top: 0;
+      height: 100vh;
+      background: #343a40;
+    }
+
+    /* Contenedor principal */
+    .main-content {
+      margin-left: 250px;
+      padding: 20px;
+      width: calc(100% - 250px); /* Se ajusta al espacio restante */
+      max-width: 100vw;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 100%;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 1200px; /* Para evitar que se expanda demasiado */
+      margin: 0 auto; /* Centrar si la pantalla es más grande */
+      overflow: hidden;
+    }
+
 
     .table-title {
       font-size: 1.5rem;
@@ -24,12 +56,6 @@
       font-weight: bold;
       border-radius: 8px;
       padding: 8px 16px;
-    }
-
-    .card {
-      border-radius: 12px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      overflow: hidden;
     }
 
     .card-header {
@@ -86,48 +112,63 @@
 </head>
 <body>
 
-<div class="container mt-5">
-  <div class="card">
-    <div class="card-header">
-      <h2 class="table-title">Tabla de Empleados</h2>
-      <button class="btn btn-add-employee" onclick="window.location.href='add-employee.html'">Agregar Empleado</button>
-    </div>
-    <div class="card-body">
+<!-- Menú lateral -->
+<div id="menu-container"></div>
 
-      <!-- Contenedor Responsivo de la Tabla -->
-      <div class="table-responsive">
-        <table class="table table-hover">
-          <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Apellidos</th>
-            <th>Puesto</th>
-            <th>Salario</th>
-            <th>Contratación</th>
-            <th>Teléfono</th>
-            <th>Correo Electrónico</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-          </tr>
-          </thead>
-          <tbody id="employeeTable">
-          <!-- Se llenará dinámicamente con JS -->
-          </tbody>
-        </table>
+<!-- Contenido principal -->
+<div class="main-content">
+  <div class="container mt-5">
+    <div class="card">
+      <div class="card-header">
+        <h2 class="table-title">Tabla de Empleados</h2>
+        <button class="btn-add-employee" onclick="window.location.href='add-employee.html'">Agregar Empleado</button>
       </div>
+      <div class="card-body">
+        <!-- Contenedor Responsivo de la Tabla -->
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Apellidos</th>
+              <th>Puesto</th>
+              <th>Salario</th>
+              <th>Contratación</th>
+              <th>Teléfono</th>
+              <th>Correo Electrónico</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody id="employeeTable">
+            <!-- Se llenará dinámicamente con JS -->
+            </tbody>
+          </table>
+        </div>
 
-      <!-- Paginación -->
-      <nav>
-        <ul class="pagination justify-content-center" id="pagination">
-          <!-- Se llenará dinámicamente con JS -->
-        </ul>
-      </nav>
+        <!-- Paginación -->
+        <nav>
+          <ul class="pagination justify-content-center" id="pagination">
+            <!-- Se llenará dinámicamente con JS -->
+          </ul>
+        </nav>
 
+      </div>
     </div>
   </div>
 </div>
 
 <script src="assets/js/bootstrap.bundle.min.js"></script>
 <script src="js/dashboard.js"></script>
+<script>
+  // Cargar el menú lateral dinámicamente
+  fetch("MenuLateral.html")
+          .then(response => response.text())
+          .then(html => {
+            document.getElementById("menu-container").innerHTML = html;
+          })
+          .catch(error => console.error("Error cargando el menú:", error));
+</script>
+
 </body>
 </html>
