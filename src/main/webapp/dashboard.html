@@ -161,13 +161,34 @@
 <script src="assets/js/bootstrap.bundle.min.js"></script>
 <script src="js/dashboard.js"></script>
 <script>
-  // Cargar el menú lateral dinámicamente
+  // Cargar el menú
   fetch("MenuLateral.html")
           .then(response => response.text())
           .then(html => {
             document.getElementById("menu-container").innerHTML = html;
+            initializeMenu(); // Inicializar el menú después de cargar
           })
           .catch(error => console.error("Error cargando el menú:", error));
+
+  // Función para inicializar el menú
+  function initializeMenu() {
+    // Delegación de eventos para el botón
+    document.body.addEventListener('click', function(e) {
+      if (e.target.closest('#sidebarCollapse')) {
+        document.getElementById('sidebar').classList.toggle('collapsed');
+      }
+    });
+
+    // Ajustar comportamiento responsive
+    window.addEventListener('resize', function() {
+      const sidebar = document.getElementById('sidebar');
+      if (window.innerWidth < 768) {
+        sidebar.classList.add('collapsed');
+      } else {
+        sidebar.classList.remove('collapsed');
+      }
+    });
+  }
 </script>
 
 </body>
