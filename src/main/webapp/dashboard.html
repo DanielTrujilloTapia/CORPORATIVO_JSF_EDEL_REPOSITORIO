@@ -9,27 +9,28 @@
   <style>
     body {
       font-family: 'Roboto', sans-serif;
-      background-color: #f8f9fa; /* Fondo claro */
-      display: flex;
+      background-color: #f8f9fa;
+      padding-left: 250px;
+      transition: padding-left 0.3s ease;
     }
 
-    /* Contenedor del menú lateral */
-    #menu-container {
-      width: 250px;
-      position: fixed;
-      left: 0;
-      top: 0;
-      height: 100vh;
-      background: #343a40;
+    body.sidebar-collapsed {
+      padding-left: 70px;
     }
 
-    /* Contenedor principal */
+    @media (max-width: 768px) {
+      body {
+        padding-left: 0;
+      }
+
+      body.sidebar-collapsed {
+        padding-left: 0;
+      }
+    }
+
+    /* Resto de tus estilos del dashboard... */
     .main-content {
-      margin-left: 250px;
       padding: 20px;
-      width: calc(100% - 250px); /* Se ajusta al espacio restante */
-      max-width: 100vw;
-      overflow-x: hidden;
     }
 
     .container {
@@ -38,11 +39,10 @@
 
     .card {
       width: 100%;
-      max-width: 1200px; /* Para evitar que se expanda demasiado */
-      margin: 0 auto; /* Centrar si la pantalla es más grande */
+      max-width: 1200px;
+      margin: 0 auto;
       overflow: hidden;
     }
-
 
     .table-title {
       font-size: 1.5rem;
@@ -67,13 +67,11 @@
       border-bottom: 2px solid #dee2e6;
     }
 
-    /* Estilos para la tabla responsiva */
     .table-responsive {
       overflow-x: auto;
       white-space: nowrap;
     }
 
-    /* Estilos de la tabla */
     .table thead {
       background-color: #002F58;
       color: white;
@@ -84,7 +82,6 @@
       vertical-align: middle;
     }
 
-    /* Reducir tamaño de fuente en dispositivos pequeños */
     @media (max-width: 768px) {
       .table th, .table td {
         font-size: 14px;
@@ -92,7 +89,6 @@
       }
     }
 
-    /* Estilos para la paginación */
     .pagination .page-item .page-link {
       background-color: #002F58;
       color: white;
@@ -111,9 +107,8 @@
   </style>
 </head>
 <body>
-
-<!-- Menú lateral -->
-<div id="menu-container"></div>
+<!-- Menú lateral se cargará aquí -->
+<div id="sidebar-container"></div>
 
 <!-- Contenido principal -->
 <div class="main-content">
@@ -124,7 +119,6 @@
         <button class="btn-add-employee" onclick="window.location.href='add-employee.html'">Agregar Empleado</button>
       </div>
       <div class="card-body">
-        <!-- Contenedor Responsivo de la Tabla -->
         <div class="table-responsive">
           <table class="table table-hover">
             <thead>
@@ -146,50 +140,69 @@
           </table>
         </div>
 
-        <!-- Paginación -->
         <nav>
           <ul class="pagination justify-content-center" id="pagination">
             <!-- Se llenará dinámicamente con JS -->
           </ul>
         </nav>
-
       </div>
     </div>
   </div>
 </div>
 
 <script src="assets/js/bootstrap.bundle.min.js"></script>
-<script src="js/dashboard.js"></script>
+
+<script src="js/dashboard.js"></script> <!-- importa el dashboard.js -->
+
 <script>
-  // Cargar el menú
+  // Cargar el menú lateral
   fetch("MenuLateral.html")
           .then(response => response.text())
           .then(html => {
-            document.getElementById("menu-container").innerHTML = html;
-            initializeMenu(); // Inicializar el menú después de cargar
+            document.getElementById("sidebar-container").innerHTML = html;
+
+            // Esperar a que el DOM del menú se cargue
+            setTimeout(() => {
+              const sidebar = document.getElementById('sidebar');
+              const sidebarCollapse = document.getElementById('sidebarCollapse');
+
+              // Manejar el evento de colapso
+              sidebarCollapse.addEventListener('click', function() {
+                sidebar.classList.toggle('collapsed');
+                document.body.classList.toggle('sidebar-collapsed');
+              });
+
+              // Ajustar el padding del body según el estado inicial
+              if (sidebar.classList.contains('collapsed')) {
+                document.body.classList.add('sidebar-collapsed');
+              }
+
+              // Manejar responsive
+              window.addEventListener('resize', function() {
+                if (window.innerWidth <= 768) {
+                  sidebar.classList.add('collapsed');
+                  document.body.classList.remove('sidebar-collapsed');
+                } else {
+                  // Restaurar estado guardado
+                  const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+                  if (isCollapsed) {
+                    sidebar.classList.add('collapsed');
+                    document.body.classList.add('sidebar-collapsed');
+                  } else {
+                    sidebar.classList.remove('collapsed');
+                    document.body.classList.remove('sidebar-collapsed');
+                  }
+                }
+              });
+
+              // Inicializar para móviles
+              if (window.innerWidth <= 768) {
+                sidebar.classList.add('collapsed');
+                document.body.classList.remove('sidebar-collapsed');
+              }
+            }, 0);
           })
           .catch(error => console.error("Error cargando el menú:", error));
-
-  // Función para inicializar el menú
-  function initializeMenu() {
-    // Delegación de eventos para el botón
-    document.body.addEventListener('click', function(e) {
-      if (e.target.closest('#sidebarCollapse')) {
-        document.getElementById('sidebar').classList.toggle('collapsed');
-      }
-    });
-
-    // Ajustar comportamiento responsive
-    window.addEventListener('resize', function() {
-      const sidebar = document.getElementById('sidebar');
-      if (window.innerWidth < 768) {
-        sidebar.classList.add('collapsed');
-      } else {
-        sidebar.classList.remove('collapsed');
-      }
-    });
-  }
-</script>
-
+</script> <!-- Script encargado de cargar el menu lateral y su funcionamiento -->
 </body>
 </html>
