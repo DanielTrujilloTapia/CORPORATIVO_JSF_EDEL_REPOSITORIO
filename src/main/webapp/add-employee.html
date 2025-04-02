@@ -12,11 +12,32 @@
     body {
       font-family: 'Roboto', sans-serif;
       background-color: #f8f9fa;
+      padding-left: 250px;
+      transition: padding-left 0.3s ease;
+    }
+
+    body.sidebar-collapsed {
+      padding-left: 70px;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding-left: 0;
+      }
+
+      body.sidebar-collapsed {
+        padding-left: 0;
+      }
+    }
+
+    /* Resto de tus estilos del dashboard... */
+    .main-content {
+      padding: 20px;
     }
 
     /* Contenedor centrado */
     .container {
-      max-width: 600px;
+      max-width: 800px;
     }
 
     /* Estilo para la cabecera del card */
@@ -47,73 +68,128 @@
   </style>
 </head>
 <body>
+<!-- Menú lateral se cargará aquí -->
+<div id="sidebar-container"></div>
 
-<div class="container mt-5">
-  <div class="card shadow">
-    <div class="card-header">
-      Agregar Nuevo Empleado
-    </div>
-    <div class="card-body">
-      <form id="employeeForm">
-        <div class="mb-3">
-          <label for="nombre" class="form-label">Nombre</label>
-          <input type="text" id="nombre" class="form-control" placeholder="Tu nombre" required>
-        </div>
-        <div class="mb-3">
-          <label for="apellidos" class="form-label">Apellidos</label>
-          <input type="text" id="apellidos" class="form-control" placeholder="Tus apellidos" required>
-        </div>
-        <div class="mb-3">
-          <label for="puesto" class="form-label">Puesto</label>
-          <select id="puesto" class="form-select" required>
-            <option value="">Seleccione un puesto</option>
-            <option value="Gerente">Gerente</option>
-            <option value="Supervisor">Supervisor</option>
-            <option value="Operario">Operario</option>
-            <option value="Vendedor">Vendedor</option>
-            <option value="Almacenista">Almacenista</option>
-          </select>
-        </div>
-        <div class="mb-3">
-          <label for="salario" class="form-label">Salario</label>
-          <input type="number" id="salario" class="form-control" placeholder="Ej. 10000" required>
-        </div>
-        <div class="mb-3">
-          <label for="fecha_contratacion" class="form-label">Fecha de Contratación</label>
-          <input type="date" id="fecha_contratacion" class="form-control" required>
-        </div>
-        <div class="mb-3">
-          <label for="telefono" class="form-label">Teléfono</label>
-          <input type="text" id="telefono" class="form-control" placeholder="Tu número" required>
-        </div>
-        <div class="mb-3">
-          <label for="correo" class="form-label">Correo</label>
-          <input type="text" id="correo" class="form-control" placeholder="Tu correo" required>
-        </div>
-        <div class="mb-3">
-          <label for="direccion" class="form-label">Dirección</label>
-          <input type="text" id="direccion" class="form-control" placeholder="Tu dirección" required>
-        </div>
-        <div class="mb-3">
-          <label for="estado" class="form-label">Estado</label>
-          <select id="estado" class="form-select" required>
-            <option value="">Seleccione algun estado</option>
-            <option value="Activo">Activo</option>
-            <option value="Inactivo">Inactivo</option>
-            <option value="Suspendido">Suspendido</option>
-          </select>
-        </div>
-        <div class="d-grid gap-2">
-          <button type="submit" class="btn btn-primary">Guardar</button>
-          <a href="dashboard.html" class="btn btn-secondary">Volver</a>
-        </div>
-      </form>
+<div class="main-content">
+  <div class="container mt-5">
+    <div class="card shadow">
+      <div class="card-header">
+        Agregar Nuevo Empleado
+      </div>
+      <div class="card-body">
+        <form id="employeeForm">
+          <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input type="text" id="nombre" class="form-control" placeholder="Tu nombre" required>
+          </div>
+          <div class="mb-3">
+            <label for="apellidos" class="form-label">Apellidos</label>
+            <input type="text" id="apellidos" class="form-control" placeholder="Tus apellidos" required>
+          </div>
+          <div class="mb-3">
+            <label for="puesto" class="form-label">Puesto</label>
+            <select id="puesto" class="form-select" required>
+              <option value="">Seleccione un puesto</option>
+              <option value="Gerente">Gerente</option>
+              <option value="Supervisor">Supervisor</option>
+              <option value="Operario">Operario</option>
+              <option value="Vendedor">Vendedor</option>
+              <option value="Almacenista">Almacenista</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="salario" class="form-label">Salario</label>
+            <input type="number" id="salario" class="form-control" placeholder="Ej. 10000" required>
+          </div>
+          <div class="mb-3">
+            <label for="fecha_contratacion" class="form-label">Fecha de Contratación</label>
+            <input type="date" id="fecha_contratacion" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="telefono" class="form-label">Teléfono</label>
+            <input type="text" id="telefono" class="form-control" placeholder="Tu número" required>
+          </div>
+          <div class="mb-3">
+            <label for="correo" class="form-label">Correo</label>
+            <input type="text" id="correo" class="form-control" placeholder="Tu correo" required>
+          </div>
+          <div class="mb-3">
+            <label for="direccion" class="form-label">Dirección</label>
+            <input type="text" id="direccion" class="form-control" placeholder="Tu dirección" required>
+          </div>
+          <div class="mb-3">
+            <label for="estado" class="form-label">Estado</label>
+            <select id="estado" class="form-select" required>
+              <option value="">Seleccione algun estado</option>
+              <option value="Activo">Activo</option>
+              <option value="Inactivo">Inactivo</option>
+              <option value="Suspendido">Suspendido</option>
+            </select>
+          </div>
+          <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <a href="dashboard.html" class="btn btn-secondary">Volver</a>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 </div>
 
+
 <!-- Bootstrap JS -->
 <script src="assets/js/bootstrap.bundle.min.js"></script>
 <script src="js/add-employee.js"></script>
+<script>
+  // Cargar el menú lateral
+  fetch("MenuLateral.html")
+          .then(response => response.text())
+          .then(html => {
+            document.getElementById("sidebar-container").innerHTML = html;
+
+            // Esperar a que el DOM del menú se cargue
+            setTimeout(() => {
+              const sidebar = document.getElementById('sidebar');
+              const sidebarCollapse = document.getElementById('sidebarCollapse');
+
+              // Manejar el evento de colapso
+              sidebarCollapse.addEventListener('click', function() {
+                sidebar.classList.toggle('collapsed');
+                document.body.classList.toggle('sidebar-collapsed');
+              });
+
+              // Ajustar el padding del body según el estado inicial
+              if (sidebar.classList.contains('collapsed')) {
+                document.body.classList.add('sidebar-collapsed');
+              }
+
+              // Manejar responsive
+              window.addEventListener('resize', function() {
+                if (window.innerWidth <= 768) {
+                  sidebar.classList.add('collapsed');
+                  document.body.classList.remove('sidebar-collapsed');
+                } else {
+                  // Restaurar estado guardado
+                  const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+                  if (isCollapsed) {
+                    sidebar.classList.add('collapsed');
+                    document.body.classList.add('sidebar-collapsed');
+                  } else {
+                    sidebar.classList.remove('collapsed');
+                    document.body.classList.remove('sidebar-collapsed');
+                  }
+                }
+              });
+
+              // Inicializar para móviles
+              if (window.innerWidth <= 768) {
+                sidebar.classList.add('collapsed');
+                document.body.classList.remove('sidebar-collapsed');
+              }
+            }, 0);
+          })
+          .catch(error => console.error("Error cargando el menú:", error));
+</script> <!-- Script encargado de cargar el menu lateral y su funcionamiento -->
 </body>
 </html>
