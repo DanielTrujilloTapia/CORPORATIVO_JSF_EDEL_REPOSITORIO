@@ -142,54 +142,41 @@
 <script src="assets/js/bootstrap.bundle.min.js"></script>
 <script src="js/add-employee.js"></script>
 <script>
-  // Cargar el menú lateral
-  fetch("MenuLateral.html")
-          .then(response => response.text())
+  fetch('MenuLateral.html')
+          .then(res => res.text())
           .then(html => {
-            document.getElementById("sidebar-container").innerHTML = html;
+            document.getElementById('sidebar-container').innerHTML = html;
 
-            // Esperar a que el DOM del menú se cargue
-            setTimeout(() => {
-              const sidebar = document.getElementById('sidebar');
-              const sidebarCollapse = document.getElementById('sidebarCollapse');
-
-              // Manejar el evento de colapso
-              sidebarCollapse.addEventListener('click', function() {
-                sidebar.classList.toggle('collapsed');
-                document.body.classList.toggle('sidebar-collapsed');
-              });
-
-              // Ajustar el padding del body según el estado inicial
-              if (sidebar.classList.contains('collapsed')) {
-                document.body.classList.add('sidebar-collapsed');
+            // Ejecutar scripts embebidos
+            const scripts = document.getElementById('sidebar-container').querySelectorAll('script');
+            scripts.forEach(oldScript => {
+              const newScript = document.createElement('script');
+              if (oldScript.src) {
+                newScript.src = oldScript.src;
+              } else {
+                newScript.textContent = oldScript.textContent;
               }
+              document.body.appendChild(newScript);
+            });
 
-              // Manejar responsive
-              window.addEventListener('resize', function() {
-                if (window.innerWidth <= 768) {
-                  sidebar.classList.add('collapsed');
-                  document.body.classList.remove('sidebar-collapsed');
-                } else {
-                  // Restaurar estado guardado
-                  const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
-                  if (isCollapsed) {
-                    sidebar.classList.add('collapsed');
-                    document.body.classList.add('sidebar-collapsed');
-                  } else {
-                    sidebar.classList.remove('collapsed');
-                    document.body.classList.remove('sidebar-collapsed');
-                  }
-                }
-              });
+            // Asegurarse de que el body tenga la clase correcta antes de inicializar
+            const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+            document.body.classList.toggle('sidebar-collapsed', isCollapsed);
 
-              // Inicializar para móviles
-              if (window.innerWidth <= 768) {
-                sidebar.classList.add('collapsed');
-                document.body.classList.remove('sidebar-collapsed');
-              }
-            }, 0);
+            // Inicializar el menú lateral
+            if (window.setupSidebar) {
+              window.setupSidebar();
+            } else {
+              console.error('La función setupSidebar no está disponible');
+            }
           })
-          .catch(error => console.error("Error cargando el menú:", error));
-</script> <!-- Script encargado de cargar el menu lateral y su funcionamiento -->
+          .catch(error => console.error('Error al cargar el menú lateral:', error));
+
+  // Manejar el estado inicial del body
+  document.addEventListener('DOMContentLoaded', function() {
+    const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+    document.body.classList.toggle('sidebar-collapsed', isCollapsed);
+  });
+</script>
 </body>
 </html>

@@ -97,11 +97,6 @@
                 transform: translateX(-100%);
                 width: 250px;
             }
-
-            .main-content {
-                margin-left: 0;
-                width: 100%;
-            }
         }
     </style>
 </head>
@@ -138,27 +133,43 @@
     </ul>
 </div>
 
+<!-- ... (el resto del código permanece igual) ... -->
+
 <script>
-    document.getElementById('sidebarCollapse').addEventListener('click', function() {
-        document.getElementById('sidebar').classList.toggle('collapsed');
-
-        // Guardar estado en localStorage
-        const isCollapsed = document.getElementById('sidebar').classList.contains('collapsed');
-        localStorage.setItem('sidebarCollapsed', isCollapsed);
-    });
-
-    // Cargar estado al inicio
-    document.addEventListener('DOMContentLoaded', function() {
+    function setupSidebar() {
+        const sidebar = document.getElementById('sidebar');
         const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+
+        // Aplicar estado inicial
         if (isCollapsed) {
-            document.getElementById('sidebar').classList.add('collapsed');
+            sidebar.classList.add('collapsed');
+            document.body.classList.add('sidebar-collapsed');
         }
 
-        // Ajustar para móviles
-        if (window.innerWidth <= 768) {
-            document.getElementById('sidebar').classList.add('collapsed');
+        // Configurar el botón de colapso
+        document.getElementById('sidebarCollapse').addEventListener('click', function() {
+            sidebar.classList.toggle('collapsed');
+            document.body.classList.toggle('sidebar-collapsed');
+
+            // Guardar estado
+            localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+        });
+
+        // Manejar redimensionamiento
+        function handleResize() {
+            if (window.innerWidth <= 768) {
+                sidebar.classList.add('collapsed');
+                document.body.classList.add('sidebar-collapsed');
+                localStorage.setItem('sidebarCollapsed', 'true');
+            }
         }
-    });
+
+        window.addEventListener('resize', handleResize);
+        handleResize(); // Ejecutar al cargar
+    }
+
+    // Exportar la función para que pueda ser llamada desde el dashboard
+    window.setupSidebar = setupSidebar;
 </script>
 </body>
 </html>
