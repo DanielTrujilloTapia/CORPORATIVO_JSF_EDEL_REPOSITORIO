@@ -164,9 +164,40 @@
             }
         }
 
+        console.log("Ejecutando menu");
         window.addEventListener('resize', handleResize);
         handleResize(); // Ejecutar al cargar
     }
+
+    async function fetchAllApisModulsUser() {
+        try {
+
+            const user_logueado = JSON.parse(localStorage.getItem('usuario'));
+
+            // Fetch Perfiles API
+            const res1 = await fetch('https://api-corp-tort.onrender.com/perfiles/get_perfiles');
+            perfiles = await res1.json();
+
+            // Fetch Perfil Modulo API
+            const res2 = await fetch('https://api-corp-tort.onrender.com/perfilModul/get_perfiles_modulos');
+            perfil_modulo = await res2.json();
+
+            // Fetch Modulos API
+            const res3 = await fetch('https://api-corp-tort.onrender.com/modulos/get_modulos');
+            modulos = await res3.json();
+
+            console.log('Todas las respuestas recibidas');
+            console.log(user_logueado);
+            console.log(perfiles);
+            console.log(perfil_modulo);
+            console.log(modulos);
+
+        } catch (error) {
+            console.error('Error en una de las peticiones:', error);
+        }
+    }
+
+    fetchAllApisModulsUser();
 
     // Exportar la función para que pueda ser llamada desde el dashboard
     window.setupSidebar = setupSidebar;
