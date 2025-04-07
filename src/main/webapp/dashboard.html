@@ -175,13 +175,6 @@
             // Asegurarse de que el body tenga la clase correcta antes de inicializar
             const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
             document.body.classList.toggle('sidebar-collapsed', isCollapsed);
-
-            // Inicializar el menú lateral
-            if (window.setupSidebar) {
-              window.setupSidebar();
-            } else {
-              console.error('La función setupSidebar no está disponible');
-            }
           })
           .catch(error => console.error('Error al cargar el menú lateral:', error));
 

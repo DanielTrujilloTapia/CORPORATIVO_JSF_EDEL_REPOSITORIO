@@ -171,36 +171,88 @@
 
     async function fetchAllApisModulsUser() {
         try {
+            // 1. Obtener usuario logueado
+            const userData = localStorage.getItem('usuario');
+            if (!userData) {
+                console.error('No hay usuario logueado');
+                return null;
+            }
 
-            const user_logueado = JSON.parse(localStorage.getItem('usuario'));
+            const user_logueado = JSON.parse(userData);
+            if (!user_logueado?.idPerfil) {
+                console.error('Usuario no tiene perfil asignado');
+                return null;
+            }
 
-            // Fetch Perfiles API
-            const res1 = await fetch('https://api-corp-tort.onrender.com/perfiles/get_perfiles');
-            perfiles = await res1.json();
+            // 2. Fetch todas las APIs en paralelo con manejo de errores
+            const [perfilesRes, perfilModuloRes, modulosRes] = await Promise.all([
+                fetch('https://api-corp-tort.onrender.com/perfiles/get_perfiles'),
+                fetch('https://api-corp-tort.onrender.com/perfilModul/get_perfiles_modulos'),
+                fetch('https://api-corp-tort.onrender.com/modulos/get_modulos')
+            ]);
 
-            // Fetch Perfil Modulo API
-            const res2 = await fetch('https://api-corp-tort.onrender.com/perfilModul/get_perfiles_modulos');
-            perfil_modulo = await res2.json();
+            // Verificar que las respuestas sean OK
+            if (!perfilesRes.ok || !perfilModuloRes.ok || !modulosRes.ok) {
+                throw new Error('Error en una o más respuestas de API');
+            }
 
-            // Fetch Modulos API
-            const res3 = await fetch('https://api-corp-tort.onrender.com/modulos/get_modulos');
-            modulos = await res3.json();
+            // 3. Parsear todas las respuestas JSON
+            const [perfiles, perfil_modulo, modulos] = await Promise.all([
+                perfilesRes.json(),
+                perfilModuloRes.json(),
+                modulosRes.json()
+            ]);
 
-            console.log('Todas las respuestas recibidas');
-            console.log(user_logueado);
-            console.log(perfiles);
-            console.log(perfil_modulo);
-            console.log(modulos);
+            // 4. Verificar que el perfil del usuario existe
+            const perfilUsuario = perfiles.find(p => p.id_perfil === user_logueado.idPerfil);
+            if (!perfilUsuario) {
+                console.error('Perfil del usuario no encontrado');
+                return null;
+            }
+
+            // 5. Filtrar solo los módulos que tienen relación con el perfil del usuario
+            const modulosRelacionados = perfil_modulo
+                .filter(pm => pm.idPerfil === user_logueado.idPerfil)
+                .map(pm => {
+                    const modulo = modulos.find(m => m.id_modulo === pm.idModulo);
+                    return modulo ? {
+                        ...modulo,
+                        permisos: {
+                            agregar: pm.bitAgregar,
+                            editar: pm.bitEditar,
+                            eliminar: pm.bitEliminar,
+                            consultar: pm.bitConsultar,
+                            exportar: pm.bitExportar,
+                            bitacora: pm.bitBitacora
+                        }
+                    } : null;
+                })
+                .filter(Boolean); // Eliminar nulls por si hay módulos no encontrados
+
+            // 6. Función recursiva para construir el árbol de módulos
+            const buildMenuTree = (parentId = null) => {
+                return modulosRelacionados
+                    .filter(modulo => modulo.idModuloPadre === parentId)
+                    .map(modulo => ({
+                        ...modulo,
+                        submodulos: buildMenuTree(modulo.id_modulo)
+                    }));
+            };
+
+            // 7. Construir el menú completo
+            const menuCompleto = buildMenuTree();
+
+            console.log('Menú completo con estructura jerárquica:', menuCompleto);
+            return menuCompleto;
 
         } catch (error) {
-            console.error('Error en una de las peticiones:', error);
+            console.error('Error en fetchAllApisModulsUser:', error);
+            return null;
         }
     }
-
+    
     fetchAllApisModulsUser();
-
-    // Exportar la función para que pueda ser llamada desde el dashboard
-    window.setupSidebar = setupSidebar;
+    setupSidebar()
 </script>
 </body>
 </html>
