@@ -1,9 +1,16 @@
 document.addEventListener("DOMContentLoaded", function () {
     const modulosPermisos = "http://localhost:3000/perfilModul/get_perfil_permisos_modulos";
     let perfiles = [];
-    let permisos = []; // Array para almacenar todos los permisos
-    const modulosPorPagina = 10; // Máximo de módulos por página
-    let paginaActual = 1; // Página actual (inicia en 1)
+    let permisos = [];
+    const modulosPorPagina = 10;
+    let paginaActual = 1;
+    let isEditing = false; // Variable para controlar el modo edición
+
+    // Agregar botón de edición al HTML
+    const editButton = document.createElement("button");
+    editButton.id = "editButton";
+    editButton.textContent = "Editar";
+    document.querySelector(".container").prepend(editButton); // Ajusta el selector según tu HTML
 
     async function fetchPerfiles() {
         try {
@@ -28,7 +35,6 @@ document.addEventListener("DOMContentLoaded", function () {
             selectPerfil.appendChild(option);
         });
 
-        // Escuchar cuando cambie el select
         selectPerfil.addEventListener("change", async function () {
             const selectedId = this.value;
             if (selectedId) {
@@ -43,6 +49,21 @@ document.addEventListener("DOMContentLoaded", function () {
         try {
             const response = await fetch(`${modulosPermisos}?idPerfil=${idPerfil}`);
             permisos = await response.json();
+
+            // Convertir Buffers a números
+            permisos.forEach(p => {
+                p.bitAgregar = p.bitAgregar.data[0];
+                p.bitEditar = p.bitEditar.data[0];
+                p.bitEliminar = p.bitEliminar.data[0];
+                p.bitConsultar = p.bitConsultar.data[0];
+                p.bitExportar = p.bitExportar.data[0];
+                p.bitBitacora = p.bitBitacora.data[0];
+
+                // Asegurar que existan estas propiedades
+                p.idPerfil = p.idPerfil || p.id_perfil; // Si viene como id_perfil
+                p.idModulo = p.idModulo || p.id_modulo; // Si viene como id_modulo
+            });
+
             mostrarPagina(paginaActual);
             actualizarPaginado();
         } catch (error) {
@@ -52,35 +73,103 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function llenarTablaPermisos(modulos) {
         const tbody = document.getElementById("modulosPermisosTable");
-        tbody.innerHTML = ""; // Limpiar tabla
+        tbody.innerHTML = "";
 
         modulos.forEach(p => {
-            // Convertir el valor de los permisos de Buffer a 1 o 0
-            const bitAgregar = p.bitAgregar.data[0] === 1;
-            const bitEditar = p.bitEditar.data[0] === 1;
-            const bitEliminar = p.bitEliminar.data[0] === 1;
-            const bitConsultar = p.bitConsultar.data[0] === 1;
-            const bitExportar = p.bitExportar.data[0] === 1;
-            const bitBitacora = p.bitBitacora.data[0] === 1;
             const row = `
-                <tr>
+                <tr data-id-perfil="${p.idPerfil}" data-id-modulo="${p.idModulo}">
                     <td>${p.nombreModulo}</td>
-                    <td><input type="checkbox" ${bitAgregar ? "checked" : ""} disabled></td>
-                    <td><input type="checkbox" ${bitEditar ? "checked" : ""} disabled></td>
-                    <td><input type="checkbox" ${bitEliminar ? "checked" : ""} disabled></td>
-                    <td><input type="checkbox" ${bitConsultar ? "checked" : ""} disabled></td>
-                    <td><input type="checkbox" ${bitExportar ? "checked" : ""} disabled></td>
-                    <td><input type="checkbox" ${bitBitacora ? "checked" : ""} disabled></td>
+                    <td><input type="checkbox" ${p.bitAgregar ? "checked" : ""} ${isEditing ? "" : "disabled"}></td>
+                    <td><input type="checkbox" ${p.bitEditar ? "checked" : ""} ${isEditing ? "" : "disabled"}></td>
+                    <td><input type="checkbox" ${p.bitEliminar ? "checked" : ""} ${isEditing ? "" : "disabled"}></td>
+                    <td><input type="checkbox" ${p.bitConsultar ? "checked" : ""} ${isEditing ? "" : "disabled"}></td>
+                    <td><input type="checkbox" ${p.bitExportar ? "checked" : ""} ${isEditing ? "" : "disabled"}></td>
+                    <td><input type="checkbox" ${p.bitBitacora ? "checked" : ""} ${isEditing ? "" : "disabled"}></td>
                 </tr>
             `;
             tbody.insertAdjacentHTML("beforeend", row);
         });
+
+        // Agregar event listeners a los checkboxes
+        const checkboxes = tbody.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener("change", function() {
+                const row = this.closest("tr");
+                const idPerfil = row.dataset.idPerfil;
+                const idModulo = row.dataset.idModulo;
+                const permiso = permisos.find(p =>
+                    p.idPerfil == idPerfil && p.idModulo == idModulo
+                );
+
+                console.log(permiso);
+
+                if (permiso) {
+                    const cellIndex = this.parentElement.cellIndex;
+                    const value = this.checked ? 1 : 0;
+
+                    switch(cellIndex) {
+                        case 1: permiso.bitAgregar = value; break;
+                        case 2: permiso.bitEditar = value; break;
+                        case 3: permiso.bitEliminar = value; break;
+                        case 4: permiso.bitConsultar = value; break;
+                        case 5: permiso.bitExportar = value; break;
+                        case 6: permiso.bitBitacora = value; break;
+                    }
+                }
+            });
+        });
     }
 
+    // Función para guardar cambios
+    async function guardarPermisos() {
+        try {
+            for (const permiso of permisos) {
+                const response = await fetch("http://localhost:3000/perfilModul/update_perfil_permisos_modulo", {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        idPerfil: permiso.idPerfil,
+                        idModulo: permiso.idModulo,
+                        bitAgregar: permiso.bitAgregar,
+                        bitEditar: permiso.bitEditar,
+                        bitEliminar: permiso.bitEliminar,
+                        bitConsultar: permiso.bitConsultar,
+                        bitExportar: permiso.bitExportar,
+                        bitBitacora: permiso.bitBitacora
+                    })
+                });
+
+                if (!response.ok) throw new Error("Error en la actualización");
+            }
+
+            alert("Permisos actualizados correctamente");
+        } catch (error) {
+            console.error("Error:", error);
+            alert("Error al guardar permisos");
+        }
+    }
+
+    // Event listener para el botón de edición
+    editButton.addEventListener("click", function() {
+        if (!isEditing) {
+            isEditing = true;
+            this.textContent = "Guardar";
+            mostrarPagina(paginaActual);
+        } else {
+            isEditing = false;
+            this.textContent = "Editar";
+            mostrarPagina(paginaActual);
+            guardarPermisos();
+        }
+    });
+
+    // Resto del código sin cambios (mostrarPagina, actualizarPaginado, init)
     function mostrarPagina(pagina) {
         const inicio = (pagina - 1) * modulosPorPagina;
         const fin = inicio + modulosPorPagina;
-        const modulosPagina = permisos.slice(inicio, fin); // Extraer solo los módulos correspondientes a la página actual
+        const modulosPagina = permisos.slice(inicio, fin);
         llenarTablaPermisos(modulosPagina);
     }
 
