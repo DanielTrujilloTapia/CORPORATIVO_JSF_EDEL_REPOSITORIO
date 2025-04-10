@@ -3,10 +3,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const permisosUrl = "http://localhost:3000/permisos/get_permisos_modulo";
     const tableBody = document.getElementById("perfilTable");
     const pagination = document.getElementById("pagination");
+    const btnAgregar = document.getElementById("boton-agregar");
+    const tablaConsultar = document.getElementById("consultar-tabla");
     const itemsPerPage = 10;
     let perfiles = [];
     let currentPage = 1;
-    let permisos = { bitEditar: 0, bitEliminar: 0 };
+    let permisos = { bitEditar: 0, bitEliminar: 0, bitAgregar: 0, bitConsultar: 0 };
+
 
     async function fetchPermisos() {
         const usuario = JSON.parse(localStorage.getItem("usuario"));
@@ -24,6 +27,17 @@ document.addEventListener("DOMContentLoaded", function () {
             if (Array.isArray(data) && data.length > 0) {
                 permisos.bitEditar = data[0].bitEditar.data[0];
                 permisos.bitEliminar = data[0].bitEliminar.data[0];
+                permisos.bitAgregar = data[0].bitAgregar?.data[0] ?? 0;
+                permisos.bitConsultar = data[0].bitConsultar?.data[0] ?? 0;
+
+                // Mostrar u ocultar botón agregar según permiso
+                if (btnAgregar) {
+                    btnAgregar.style.display = permisos.bitAgregar ? "inline-block" : "none";
+                }
+                if (tablaConsultar) {
+                    tablaConsultar.style.display = permisos.bitConsultar ? "inline-block" : "none";
+                }
+
             }
         } catch (error) {
             console.error("Error al obtener permisos:", error);

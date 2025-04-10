@@ -114,10 +114,11 @@
   <div class="container mt-5">
     <div class="card">
       <div class="card-header">
-        <h2 class="table-title">Consultar de Perfiles</h2>
-        <button class="btn-add" >Agregar Nuevo Perfil</button>
+        <h2 class="table-title">Gestion de Perfiles</h2>
+        <!-- Este botón será mostrado/oculto según los permisos -->
+        <button id="boton-agregar" onclick="window.location.href='add-perfil.html'" class="btn-add">Agregar Nuevo Perfil</button>
       </div>
-      <div class="card-body">
+      <div id="consultar-tabla" class="card-body">
         <div class="table-responsive">
           <table class="table table-hover">
             <thead>
