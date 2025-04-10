@@ -84,7 +84,7 @@
         }
 
         .submenu .nav-link {
-            padding-left: 40px;
+            padding-left: 10px;
         }
 
         .has-submenu.open > .submenu {
@@ -108,7 +108,9 @@
             #sidebar.active {
                 transform: translateX(0);
             }
+
         }
+
     </style>
 </head>
 <body>
@@ -191,6 +193,7 @@
             </ul>
         </li>
 
+        <!-- Ítem de Cerrar sesión -->
         <li class="nav-item mt-auto">
             <a class="nav-link" href="#logout">
                 <i class="bi bi-box-arrow-right"></i> <span>Cerrar sesión</span>
@@ -204,12 +207,18 @@
         const sidebar = document.getElementById('sidebar');
         const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
 
+        // Aplicar estado inicial
         if (isCollapsed) {
             sidebar.classList.add('collapsed');
+            document.body.classList.add('sidebar-collapsed');
         }
 
-        document.getElementById('sidebarCollapse').addEventListener('click', () => {
+        // Configurar el botón de colapso
+        document.getElementById('sidebarCollapse').addEventListener('click', function() {
             sidebar.classList.toggle('collapsed');
+            document.body.classList.toggle('sidebar-collapsed');
+
+            // Guardar estado
             localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
         });
 
@@ -221,6 +230,21 @@
                 parent.classList.toggle('open');
             });
         });
+
+        // Manejar redimensionamiento
+        function handleResize() {
+            if (window.innerWidth <= 768) {
+                sidebar.classList.add('collapsed');
+                document.body.classList.add('sidebar-collapsed');
+                localStorage.setItem('sidebarCollapsed', 'true');
+            }
+        }
+
+        console.log("Ejecutando menu");
+        window.addEventListener('resize', handleResize);
+        handleResize(); // Ejecutar al cargar
+
+
     }
 
     async function fetchAllModulsUser() {
@@ -251,9 +275,14 @@
                 }
             });
 
-            // Paso 2: Ocultar todos los elementos inicialmente
             document.querySelectorAll('.nav-item').forEach(item => {
-                item.style.display = 'none';
+                // Excluir Inicio y Logout por su contenido de texto
+                const spanText = item.querySelector('.nav-link span')?.textContent.trim();
+                if (spanText === 'Inicio' || spanText === 'Cerrar sesión') {
+                    item.style.display = 'block'; // <- Asegurar visibilidad
+                    return;
+                }
+                item.style.display = 'none'; // <- Ocultar el resto
             });
 
             // Paso 3: Mostrar elementos permitidos y actualizar padres
