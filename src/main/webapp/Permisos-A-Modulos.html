@@ -118,7 +118,7 @@
         <!-- Este botón será mostrado/oculto según los permisos -->
         <button id="boton-agregar" onclick="window.location.href='Perfil-A-Modulos.html'" class="btn-add">Agregar Nuevo Perfil a Modulo</button>
       </div>
-      <div class="card-body">
+      <div class="card-body" id="consultar-tabla">
         <!-- Select de perfiles -->
         <div class="mb-4">
           <label for="selectPerfil" class="form-label">Selecciona un perfil:</label>
@@ -138,6 +138,7 @@
               <th>Consultar</th>
               <th>Exportar</th>
               <th>Bitacora</th>
+              <th>Eliminar</th>
             </tr>
             </thead>
             <tbody id="modulosPermisosTable">
@@ -150,7 +151,7 @@
         <div id="paginacion" class="d-flex justify-content-center mt-4">
           <!-- Los botones de paginación se llenarán dinámicamente -->
         </div>
-        
+
       </div>
     </div>
   </div>

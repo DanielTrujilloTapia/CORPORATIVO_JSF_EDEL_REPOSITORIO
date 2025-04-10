@@ -1,10 +1,58 @@
 document.addEventListener("DOMContentLoaded", function () {
     const modulosPermisos = "http://localhost:3000/perfilModul/get_perfil_permisos_modulos";
+    const permisosUrl = "http://localhost:3000/permisos/get_permisos_modulo";
+
+    const btnAgregar = document.getElementById("boton-agregar");
+    const tablaConsultar = document.getElementById("consultar-tabla");
+
+    let permiso = {bitEditar: 0, bitEliminar: 0, bitAgregar: 0, bitConsultar: 0};
+
+
     let perfiles = [];
     let permisos = [];
     const modulosPorPagina = 10;
     let paginaActual = 1;
     let isEditing = false; // Variable para controlar el modo edición
+
+
+    async function fetchPermisos() {
+        const usuario = JSON.parse(localStorage.getItem("usuario"));
+        const idPerfil = usuario?.idPerfil;
+
+        if (!idPerfil) {
+            console.error("No se encontró idPerfil en el localStorage");
+            return;
+        }
+
+        try {
+            const response = await fetch(`${permisosUrl}?idPerfil=${idPerfil}&nombreModulo=Permisos del Modulo`);
+            const data = await response.json();
+
+            if (Array.isArray(data) && data.length > 0) {
+                permiso.bitEditar = data[0].bitEditar.data[0];
+                permiso.bitEliminar = data[0].bitEliminar.data[0];
+                permiso.bitAgregar = data[0].bitAgregar?.data[0] ?? 0;
+                permiso.bitConsultar = data[0].bitConsultar?.data[0] ?? 0;
+
+                // Mostrar u ocultar botón agregar según permiso
+                if (btnAgregar) {
+                    btnAgregar.style.display = permiso.bitAgregar ? "inline-block" : "none";
+                }
+                if (tablaConsultar) {
+                    tablaConsultar.style.display = permiso.bitConsultar ? "inline-block" : "none";
+                }
+
+                // Mostrar u ocultar botón editar según permiso
+                const editButton = document.getElementById("editButton");
+                if (editButton) {
+                    editButton.style.display = permiso.bitEditar ? "inline-block" : "none";
+                }
+
+            }
+        } catch (error) {
+            console.error("Error al obtener permisos:", error);
+        }
+    }
 
     // Agregar botón de edición al HTML
     const editButton = document.createElement("button");
@@ -76,6 +124,10 @@ document.addEventListener("DOMContentLoaded", function () {
         tbody.innerHTML = "";
 
         modulos.forEach(p => {
+            const eliminarBtn = permiso.bitEliminar
+                ? `<button class="btn btn-danger btn-sm">Eliminar</button>`
+                : "";
+
             const row = `
                 <tr data-id-perfil="${p.idPerfil}" data-id-modulo="${p.idModulo}">
                     <td>${p.nombreModulo}</td>
@@ -85,6 +137,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     <td><input type="checkbox" ${p.bitConsultar ? "checked" : ""} ${isEditing ? "" : "disabled"}></td>
                     <td><input type="checkbox" ${p.bitExportar ? "checked" : ""} ${isEditing ? "" : "disabled"}></td>
                     <td><input type="checkbox" ${p.bitBitacora ? "checked" : ""} ${isEditing ? "" : "disabled"}></td>
+                    
+                    <td class="text-sm-center">
+                        ${eliminarBtn}
+                    </td>
                 </tr>
             `;
             tbody.insertAdjacentHTML("beforeend", row);
@@ -93,7 +149,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Agregar event listeners a los checkboxes
         const checkboxes = tbody.querySelectorAll('input[type="checkbox"]');
         checkboxes.forEach(checkbox => {
-            checkbox.addEventListener("change", function() {
+            checkbox.addEventListener("change", function () {
                 const row = this.closest("tr");
                 const idPerfil = row.dataset.idPerfil;
                 const idModulo = row.dataset.idModulo;
@@ -107,13 +163,25 @@ document.addEventListener("DOMContentLoaded", function () {
                     const cellIndex = this.parentElement.cellIndex;
                     const value = this.checked ? 1 : 0;
 
-                    switch(cellIndex) {
-                        case 1: permiso.bitAgregar = value; break;
-                        case 2: permiso.bitEditar = value; break;
-                        case 3: permiso.bitEliminar = value; break;
-                        case 4: permiso.bitConsultar = value; break;
-                        case 5: permiso.bitExportar = value; break;
-                        case 6: permiso.bitBitacora = value; break;
+                    switch (cellIndex) {
+                        case 1:
+                            permiso.bitAgregar = value;
+                            break;
+                        case 2:
+                            permiso.bitEditar = value;
+                            break;
+                        case 3:
+                            permiso.bitEliminar = value;
+                            break;
+                        case 4:
+                            permiso.bitConsultar = value;
+                            break;
+                        case 5:
+                            permiso.bitExportar = value;
+                            break;
+                        case 6:
+                            permiso.bitBitacora = value;
+                            break;
                     }
                 }
             });
@@ -152,7 +220,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Event listener para el botón de edición
-    editButton.addEventListener("click", function() {
+    editButton.addEventListener("click", function () {
         if (!isEditing) {
             isEditing = true;
             this.textContent = "Guardar";
@@ -220,6 +288,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     async function init() {
+        await fetchPermisos();
         await fetchPerfiles();
     }
 
