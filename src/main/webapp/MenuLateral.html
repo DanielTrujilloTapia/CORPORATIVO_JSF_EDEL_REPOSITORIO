@@ -78,9 +78,12 @@
         }
 
         .submenu {
-            display: none;
+            display: flex;
             flex-direction: column;
             margin-left: 10px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
         }
 
         .submenu .nav-link {
@@ -88,7 +91,7 @@
         }
 
         .has-submenu.open > .submenu {
-            display: flex;
+            max-height: 500px; /* Ajusta según contenido */
         }
 
         #sidebarCollapse {
@@ -220,13 +223,38 @@
 
             // Guardar estado
             localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+
+            // 🔽 Contraer todos los submenús si se colapsa el menú
+            if (sidebar.classList.contains('collapsed')) {
+                document.querySelectorAll('.has-submenu').forEach(item => item.classList.remove('open'));
+            }
+
         });
 
         // Submenú toggle
         document.querySelectorAll('.has-submenu > .nav-link').forEach(link => {
             link.addEventListener('click', e => {
                 e.preventDefault();
+                const sidebar = document.getElementById('sidebar');
                 const parent = link.parentElement;
+
+                if (sidebar.classList.contains('collapsed')) {
+                    // // 🔄 Opción 1: Desplegar automáticamente el menú
+                    // sidebar.classList.remove('collapsed');
+                    // document.body.classList.remove('sidebar-collapsed');
+                    // localStorage.setItem('sidebarCollapsed', 'false');
+                    //
+                    // // 🔄 Abrir el submenú tras expandir
+                    // setTimeout(() => {
+                    //     parent.classList.add('open');
+                    // }, 400); // Espera a que la animación termine
+                    //
+                    // return;
+
+                    // 🚫 Opción 2: Bloquear apertura de submenús mientras colapsado
+                     return; // <- Descomenta esta línea y comenta la opción 1 si prefieres bloquear apertura
+                }
+
                 parent.classList.toggle('open');
             });
         });
