@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Nueva Asiganacion de Perfil a Modulo</title>
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa;
+            padding-left: 350px;
+            transition: padding-left 0.3s ease;
+        }
+
+        body.sidebar-collapsed {
+            padding-left: 70px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding-left: 0;
+            }
+
+            body.sidebar-collapsed {
+                padding-left: 0;
+            }
+        }
+
+        /* Resto de tus estilos del dashboard... */
+        .main-content {
+            padding: 20px;
+        }
+
+        /* Contenedor centrado */
+        .container {
+            max-width: 800px;
+        }
+
+        /* Estilo para la cabecera del card */
+        .card-header {
+            background-color: #002F58;
+            color: white;
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        /* Estilo para los botones */
+        .btn-primary {
+            background-color: #002F58;
+            border-color: #002F58;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background-color: #001F3A;
+            border-color: #001F3A;
+        }
+
+        .btn-secondary {
+            width: 100%;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Menú lateral se cargará aquí -->
+<div id="sidebar-container"></div>
+
+<div class="main-content">
+    <div class="container mt-5">
+        <div class="card shadow">
+            <div class="card-header">
+                Agregar Nueva Relacion de Perfil a Modulo
+            </div>
+            <div class="card-body">
+                <form id="perfilModuloForm">
+
+                    <div class="mb-3">
+                        <label for="selectModulo" class="form-label">Nombre del Módulo</label>
+                        <select id="selectModulo" class="form-control" required></select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="selectPerfil" class="form-label">Nombre del Perfil</label>
+                        <select id="selectPerfil" class="form-control" required></select>
+                    </div>
+
+                    <!-- Permisos -->
+                    <div class="mb-3">
+                        <label class="form-label text-sm-center">Permisos</label>
+                        <div class="row">
+                            <div class="col-6 col-md-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="bitAgregar">
+                                    <label class="form-check-label" for="bitAgregar">Agregar</label>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="bitEditar">
+                                    <label class="form-check-label" for="bitEditar">Editar</label>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="bitEliminar">
+                                    <label class="form-check-label" for="bitEliminar">Eliminar</label>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="bitConsultar">
+                                    <label class="form-check-label" for="bitConsultar">Consultar</label>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="bitExportar">
+                                    <label class="form-check-label" for="bitExportar">Exportar</label>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="bitBitacora">
+                                    <label class="form-check-label" for="bitBitacora">Bitácora</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                        <a href="Permisos-A-Modulos.html" class="btn btn-secondary">Volver</a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="js/Perfil-A-Modulos.js"></script>
+<script src="assets/js/bootstrap.bundle.min.js"></script>
+<script>
+    fetch('MenuLateral.html')
+        .then(res => res.text())
+        .then(html => {
+            document.getElementById('sidebar-container').innerHTML = html;
+
+            // Ejecutar scripts embebidos
+            const scripts = document.getElementById('sidebar-container').querySelectorAll('script');
+            scripts.forEach(oldScript => {
+                const newScript = document.createElement('script');
+                if (oldScript.src) {
+                    newScript.src = oldScript.src;
+                } else {
+                    newScript.textContent = oldScript.textContent;
+                }
+                document.body.appendChild(newScript);
+            });
+
+            // Asegurarse de que el body tenga la clase correcta antes de inicializar
+            const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+            document.body.classList.toggle('sidebar-collapsed', isCollapsed);
+        })
+        .catch(error => console.error('Error al cargar el menú lateral:', error));
+
+    // Manejar el estado inicial del body
+    document.addEventListener('DOMContentLoaded', function() {
+        const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+        document.body.classList.toggle('sidebar-collapsed', isCollapsed);
+    });
+</script>
+</body>
+</html>
